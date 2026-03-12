@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: agrolinq-db
+    environment:
+      POSTGRES_USER: agrouser703
+      POSTGRES_PASSWORD: thatsapass007
+      POSTGRES_DB: agrolinq
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
