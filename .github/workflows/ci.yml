@@ -41,4 +41,6 @@ jobs:
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/agrolinq
           SPRING_DATASOURCE_USERNAME: agrouser703
-          SPRING_DATASOURCE_PASSWORD: thatsapass007
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: 86400000
