@@ -200,3 +200,118 @@
 **Response `204`:** no content
 
 ---
+
+## Orders `/api/orders`
+
+| Method | Route | Description | Auth Required |
+|--------|-------|-------------|---------------|
+| POST | `/api/orders` | Create order | ✅ Consumidor |
+| GET | `/api/orders/{id}` | Get order by id | ✅ |
+| GET | `/api/orders/consumidor/{id}` | List by consumidor | ✅ Consumidor |
+| GET | `/api/orders/produtor/{id}` | List by produtor | ✅ Produtor |
+| PATCH | `/api/orders/{id}/status` | Update status | ✅ Produtor |
+| PATCH | `/api/orders/{id}/cancelar` | Cancel order | ✅ |
+| PATCH | `/api/orders/{id}/avaliar` | Rate order | ✅ Consumidor |
+
+### POST `/api/orders`
+**Headers:** `x-user-id: uuid`
+
+**Request:**
+```json
+{
+  "produtorId": "uuid",
+  "itens": [
+    {
+      "produtoId": "uuid",
+      "nome": "Tomate Cereja",
+      "quantidade": 2,
+      "precoUnitario": 12.50
+    }
+  ]
+}
+```
+**Response `201`:**
+```json
+{
+  "id": "uuid",
+  "consumidorId": "uuid",
+  "consumidorNome": "Nome",
+  "produtorId": "uuid",
+  "produtorNome": "Nome",
+  "itens": [
+    {
+      "id": "uuid",
+      "produtoId": "uuid",
+      "nome": "Tomate Cereja",
+      "quantidade": 2,
+      "precoUnitario": 12.50
+    }
+  ],
+  "total": 25.00,
+  "status": "NOVO",
+  "produtorNotificado": false,
+  "avaliacaoNota": null,
+  "avaliacaoComentario": null,
+  "avaliadoEm": null,
+  "canceladoPor": null,
+  "motivoCancelamento": null,
+  "canceladoEm": null,
+  "createdAt": "2026-01-01T00:00:00",
+  "updatedAt": "2026-01-01T00:00:00"
+}
+```
+ 
+---
+
+### PATCH `/api/orders/{id}/status`
+**Headers:** `x-user-id: uuid`
+
+**Request:**
+```json
+{
+  "status": "EM_SEPARACAO"
+}
+```
+**Response `200`:** order response with updated status
+ 
+---
+
+### PATCH `/api/orders/{id}/cancelar`
+**Headers:** `x-user-id: uuid`
+
+**Request:**
+```json
+{
+  "motivo": "Produto indisponível"
+}
+```
+**Response `200`:** order response with status `CANCELADO`
+ 
+---
+
+### PATCH `/api/orders/{id}/avaliar`
+**Headers:** `x-user-id: uuid`
+
+**Request:**
+```json
+{
+  "nota": 5,
+  "comentario": "Excelente produtor!"
+}
+```
+**Response `200`:** order response with avaliacao filled
+ 
+---
+
+### GET `/api/orders/{id}`
+**Response `200`:** order response
+ 
+---
+
+### GET `/api/orders/consumidor/{consumidorId}`
+**Response `200`:** array of order responses
+ 
+---
+
+### GET `/api/orders/produtor/{produtorId}`
+**Response `200`:** array of order responses
