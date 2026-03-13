@@ -3,7 +3,9 @@ package com.agrolinq.app.dtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class ProdutorRegisterRequestDTO {
 
     @NotBlank(message = "Nome é obrigatório")
