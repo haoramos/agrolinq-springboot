@@ -1,5 +1,6 @@
 package com.agrolinq.app.controllers;
 
+import com.agrolinq.app.config.AuthenticatedUserHelper;
 import com.agrolinq.app.dtos.OrderRequestDTO;
 import com.agrolinq.app.dtos.OrderResponseDTO;
 import com.agrolinq.app.models.enums.OrderStatus;
@@ -20,12 +21,13 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
+    private final AuthenticatedUserHelper authenticatedUserHelper;
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> criar(
-            @RequestBody @Valid OrderRequestDTO requestDTO,
-            @RequestHeader("x-user-id") UUID consumidorId
+            @RequestBody @Valid OrderRequestDTO requestDTO
     ) {
+        UUID consumidorId = authenticatedUserHelper.getAuthenticatedUserId();
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.criar(requestDTO, consumidorId));
     }
 
@@ -53,9 +55,9 @@ public class OrderController {
     @PutMapping("{id}/status")
     public ResponseEntity<OrderResponseDTO> atualizarStatus(
             @PathVariable UUID id,
-            @RequestBody Map<String, String> body,
-            @RequestHeader("x-user-id") UUID produtorId
+            @RequestBody Map<String, String> body
     ) {
+        UUID produtorId = authenticatedUserHelper.getAuthenticatedUserId();
         OrderStatus status = OrderStatus.valueOf(body.get("status").toUpperCase());
         return ResponseEntity.ok(orderService.autalizarStatus(id, status, produtorId));
     }
@@ -63,18 +65,18 @@ public class OrderController {
     @PatchMapping("{id}/cancelar")
     public ResponseEntity<OrderResponseDTO> cancelar(
             @PathVariable UUID id,
-            @RequestBody Map<String, String> body,
-            @RequestHeader("x-user-id") UUID userId
+            @RequestBody Map<String, String> body
     ) {
+        UUID userId = authenticatedUserHelper.getAuthenticatedUserId();
         return ResponseEntity.ok(orderService.cancelar(id, userId, body.get("motivo")));
     }
 
     @PatchMapping("{id}/avaliar")
     public ResponseEntity<OrderResponseDTO> avaliar(
             @PathVariable UUID id,
-            @RequestBody Map<String, Object> body,
-            @RequestHeader("x-user-id") UUID consumidorId
+            @RequestBody Map<String, Object> body
     ) {
+        UUID consumidorId = authenticatedUserHelper.getAuthenticatedUserId();
         Integer nota = (Integer) body.get("nota");
         String comentario = (String) body.get("comentario");
         return ResponseEntity.ok(orderService.avaliar(id, nota, comentario, consumidorId));

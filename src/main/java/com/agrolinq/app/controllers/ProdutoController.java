@@ -1,5 +1,6 @@
 package com.agrolinq.app.controllers;
 
+import com.agrolinq.app.config.AuthenticatedUserHelper;
 import com.agrolinq.app.dtos.ProdutoRequestDTO;
 import com.agrolinq.app.dtos.ProdutoResponseDTO;
 import com.agrolinq.app.repository.ProdutoRepository;
@@ -20,19 +21,22 @@ import java.util.UUID;
 public class ProdutoController {
 
     private final ProdutoService produtoService;
+    private final AuthenticatedUserHelper  authenticatedUserHelper;
 
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> criar(
-            @RequestBody @Valid ProdutoRequestDTO requestDTO,
-            @RequestHeader("x-user-id") UUID produtorId) {
+            @RequestBody @Valid ProdutoRequestDTO requestDTO
+    ) {
+        UUID produtorId = authenticatedUserHelper.getAuthenticatedUserId();
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.criar(requestDTO, produtorId));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> atualizar(
             @PathVariable UUID id,
-            @RequestBody @Valid ProdutoRequestDTO requestDTO,
-            @RequestHeader("x-user-id") UUID produtorId){
+            @RequestBody @Valid ProdutoRequestDTO requestDTO
+    ){
+        UUID produtorId = authenticatedUserHelper.getAuthenticatedUserId();
         return ResponseEntity.ok().body(produtoService.atualizar(id, requestDTO, produtorId));
     }
 
@@ -62,9 +66,9 @@ public class ProdutoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(
-            @PathVariable UUID id,
-            @RequestHeader("x-user-id") UUID produtorId
+            @PathVariable UUID id
     ) {
+        UUID produtorId = authenticatedUserHelper.getAuthenticatedUserId();
         produtoService.deletar(id, produtorId);
         return ResponseEntity.noContent().build();
     }
